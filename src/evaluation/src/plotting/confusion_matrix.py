@@ -16,7 +16,7 @@ def plot_confusion_matrix(y: np.ndarray, x:np.ndarray, class_name:str)-> plt.axe
     :return: matplotlib.axis
     """
     cm = confusion_matrix(y,x)
-    ax = plt.subplot()
+    fig, ax = plt.subplots()
     sns.heatmap(cm, annot=True, ax=ax, fmt='g');  # annot=True to annotate cells
 
     # labels, title and ticks

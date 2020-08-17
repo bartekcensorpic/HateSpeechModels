@@ -5,6 +5,10 @@ import os
 from os.path import join
 
 
+def save_ax(ax, save_path):
+    ax.get_figure().savefig(save_path)
+
+
 def create_folder(paths:List):
     folder_path = os.path.join(*paths)
     if not os.path.exists(folder_path):
@@ -86,26 +90,33 @@ class BinaryClassificationResult:
             (precision_full, recall_full, thresholds_full) = self.get_precision_recall_thresholds()
 
             #https://stackoverflow.com/questions/28439701/how-to-save-and-load-numpy-array-data-properly
-            np.save(join(full_results_path, 'precision_full.txt'), precision_full)
-            np.save(join(full_results_path, 'recall_full.txt'), recall_full)
-            np.save(join(full_results_path, 'thresholds_full.txt'), thresholds_full)
+            np.savetxt(join(full_results_path, 'precision_full.txt'), precision_full)
+            np.savetxt(join(full_results_path, 'recall_full.txt'), recall_full)
+            np.savetxt(join(full_results_path, 'thresholds_full.txt'), thresholds_full)
 
             p_r_t_p_plot = self.get_precision_recall_threshold_plot()
-            p_r_t_p_plot.savefig(join(full_results_path, 'full_precision_recall_threshold_plot.jpg'))
+            save_ax(p_r_t_p_plot,join(full_results_path, 'full_precision_recall_threshold_plot.jpg'))
+
 
             cm = self.get_confusion_matrix()
-            cm.savefig(join(full_results_path, 'confusion_matrix.jpg'))
+            save_ax(cm, join(full_results_path, 'confusion_matrix.jpg'))
+
+            cc = self.get_calibration_curve()
+            save_ax(cc,join(full_results_path, 'calibration_curve.jpg'))
 
             f1_values, threshold_for_f1_values, f1_ths_ax = self.get_f1_thresholds_and_plot()
-            np.save(join(full_results_path, 'f1_values.txt'), f1_values)
-            np.save(join(full_results_path, 'threshold_for_f1_values.txt'), threshold_for_f1_values)
-            f1_ths_ax.savefig(join(full_results_path, 'f1_thresholds.jpg'))
+            np.savetxt(join(full_results_path, 'f1_values.txt'), f1_values)
+            np.savetxt(join(full_results_path, 'threshold_for_f1_values.txt'), threshold_for_f1_values)
+            save_ax(f1_ths_ax, join(full_results_path, 'f1_thresholds.jpg'))
+
 
 
 
             return True, 'OK'
 
         except Exception as e:
+            debug = 5
+            print(e)
             return False,e
 
 

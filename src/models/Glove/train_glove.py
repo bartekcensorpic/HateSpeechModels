@@ -78,7 +78,7 @@ def train_glove(train_X, train_y, test_X, test_y,save_folder_path, pretrained_mo
 
     history = model.fit(padded_docs,
                         train_y,
-                        epochs=50,
+                        epochs=1,
                         verbose=1,
                         callbacks = callbacks,
                         validation_data=(test_padded, test_y))
