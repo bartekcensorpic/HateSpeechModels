@@ -6,14 +6,16 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.layers import Flatten
-from tensorflow.keras.layers import Embedding
+from tensorflow.keras.layers import Embedding, Conv1D, MaxPooling1D
 
-from models.callbacks import get_callbacks
+from src.models.shared_utils.callbacks import get_callbacks
 from src.utils.keras_metrics import f1_m, precision_m, recall_m
 import os
 
 def get_max_length(train_X):
-    return len(max(train_X, key=len)[0])
+    longest_sent = max(train_X, key=len)
+    length = len(longest_sent)
+    return length
 
 
 
@@ -60,9 +62,10 @@ def train_glove(train_X, train_y, test_X, test_y,save_folder_path, pretrained_mo
     model = Sequential()
     e = Embedding(vocab_size, 100, weights=[embedding_matrix], input_length=max_length, trainable=False) # todo: try trainable=True
     model.add(e)
+    model.add(Conv1D(32, 8, activation='relu'))
+    model.add(MaxPooling1D())
     model.add(Flatten())
-    model.add(Dense(512, activation='relu'))
-    model.add(Dense(256, activation='relu'))
+    model.add(Dense(10, activation='relu'))
     model.add(Dense(1, activation='sigmoid'))
     # compile the model
     model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy',f1_m,precision_m, recall_m])
@@ -78,7 +81,7 @@ def train_glove(train_X, train_y, test_X, test_y,save_folder_path, pretrained_mo
 
     history = model.fit(padded_docs,
                         train_y,
-                        epochs=1,
+                        epochs=50,
                         verbose=1,
                         callbacks = callbacks,
                         validation_data=(test_padded, test_y))

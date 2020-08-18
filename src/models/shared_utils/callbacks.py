@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from src.models.clr_callback import CyclicLR
+from src.models.shared_utils.clr_callback import CyclicLR
 
 
 def get_callbacks(

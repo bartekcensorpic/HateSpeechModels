@@ -15,11 +15,11 @@ def plot_threshold_f1_plot(f1_scores: Union[np.ndarray,List], thresholds: Union[
     :return: matplotlib axis
     """
     fig, ax = plt.subplots()
-    ax.plot(f1_scores, thresholds)
+    ax.plot(thresholds,f1_scores)
 
     ax.set_title(title)
-    ax.set_xlabel("F1 score")
-    ax.set_ylabel("Threshold")
+    ax.set_ylabel("F1 score")
+    ax.set_xlabel("Threshold")
 
     return ax
 
