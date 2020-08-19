@@ -3,12 +3,30 @@ from sklearn.metrics import classification_report
 from src.pipeline.get_data import get_dfs
 from src.models.Glove.train_glove import train_glove
 from src.models.Bert.bert_transformers_train import train_bert_transformers
+from src.models.Bert.bert_for_tf2_train import train_bert_for_tf2
 from src.utils.file_utils import get_output_folder
 from src.evaluation.src.evaluations.binary_evaluation import calculate_binary_classification_metrics
 
 
+def get_bert_tf2(train_X, train_y, test_X, test_y,root_save_path):
+    output_save_path = get_output_folder(root_save_path, 'bert_for_tf2')
+
+    def train():
+
+        return train_bert_for_tf2(
+            train_X=train_X,
+            train_y=train_y,
+            test_X=test_X,
+            test_y=test_y,
+            save_folder_path=output_save_path
+        )
+
+    return train, output_save_path
+
+
+
 def get_bert_transformers(train_X, train_y, test_X, test_y,root_save_path):
-    output_save_path = get_output_folder(root_save_path, 'bert')
+    output_save_path = get_output_folder(root_save_path, 'bert_transformers')
 
     def train():
 
@@ -47,12 +65,13 @@ def start(dataset_path,root_save_path):
     model_map = {
         'glove': get_glove(train_X, train_y, test_X, test_y,root_save_path),
         'bert_transformers': get_bert_transformers(train_X, train_y, test_X, test_y,root_save_path),
+        'bert_tf2': get_bert_tf2(train_X, train_y, test_X, test_y,root_save_path),
 
     }
 
 
 
-    train_function, output_save_path  = model_map['bert_transformers']
+    train_function, output_save_path  = model_map['bert_tf2']
 
     predictions, test_y = train_function()
 

@@ -6,7 +6,8 @@ def get_dfs(data_path, separator, max_seq_length = 256):
 
     #data = pd.read_csv(data_path, sep=';')
     data = pd.read_csv(data_path, sep=separator)
-    X_train, X_test = train_test_split(data, test_size=0.25)
+    #todo stratify
+    X_train, X_test = train_test_split(data, test_size=0.2)
 
     train_text = X_train['Comment_text'].tolist()
     train_text = [' '.join(str(t).split()[0:max_seq_length]) for t in train_text]

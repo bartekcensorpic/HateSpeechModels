@@ -82,7 +82,7 @@ def train_bert_transformers(train_X, train_y, test_X, test_y,save_folder_path):
 
     # we will do just 1 epoch for illustration, though multiple epochs might be better as long as we will not overfit the model
     number_of_epochs = 1
-
+    print('[#### info lol ###]number of epochs:', number_of_epochs)
     # model initialization
     model = TFBertForSequenceClassification.from_pretrained('bert-base-uncased')
 
@@ -99,10 +99,12 @@ def train_bert_transformers(train_X, train_y, test_X, test_y,save_folder_path):
                   )
 
     callbacks = get_callbacks(
-        best_model_checkpoint_path=os.path.join(save_folder_path,'glove_model.h5'),
+        best_model_checkpoint_path=os.path.join(save_folder_path,'bert_transformers_model.h5'),
         csv_logger_path=os.path.join(save_folder_path, 'history_log.csv'),
         tensorboard_logdir=os.path.join(save_folder_path, 'tensorboard'),
     )
+
+
 
     bert_history = model.fit(ds_train_encoded,
                              epochs=number_of_epochs,
