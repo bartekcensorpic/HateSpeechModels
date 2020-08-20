@@ -6,10 +6,10 @@ import tensorflow as tf
 from tensorflow.keras.layers import Dense, Input
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.models import Model
-from tensorflow.keras.callbacks import ModelCheckpoint
 import transformers
 
 from models.shared_utils.callbacks import get_callbacks
+from utils.keras_metrics import f1_m, precision_m, recall_m
 
 
 def build_model(transformer, max_len=512):
@@ -19,7 +19,7 @@ def build_model(transformer, max_len=512):
     out = Dense(1, activation='sigmoid')(cls_token)
 
     model = Model(inputs=input_word_ids, outputs=out)
-    model.compile(Adam(lr=1e-5), loss='binary_crossentropy', metrics=['accuracy'])
+    model.compile(Adam(lr=1e-5), loss='binary_crossentropy', metrics=['accuracy',f1_m, precision_m, recall_m])
 
     return model
 
