@@ -94,6 +94,7 @@ def tokenize_reviews(tokenizer, text_sentences):
 
 def pad_sentence(sentence , max_padding_length):
     padded =  pad_sequences([sentence], maxlen=max_padding_length, padding='post')
+    padded = padded.reshape(-1).tolist()
     return padded
 
 def process_dataset(tokenizer, X, y,BATCH_SIZE, max_padding_length:None):

@@ -2,10 +2,15 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 import numpy as np
 
-def get_dfs(data_path, separator, max_seq_length = 256):
+def get_dfs(data_path, separator, max_seq_length = 256, max_items=None):
 
     #data = pd.read_csv(data_path, sep=';')
     data = pd.read_csv(data_path, sep=separator)
+
+    if max_items is not None:
+        data = data.head(max_items)
+        print(f'#### gettnig just TOP {max_items} rows from dataset')
+
     #todo stratify
     X_train, X_test = train_test_split(data, test_size=0.2)
 
