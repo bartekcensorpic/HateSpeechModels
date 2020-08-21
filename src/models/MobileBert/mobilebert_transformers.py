@@ -44,7 +44,7 @@ def bert_encode(texts, tokenizer, max_len=512):
 
 
 
-def train_distilbert_transformers2(train_X, train_y, test_X, test_y,save_folder_path):
+def train_mobilebert_transformers(train_X, train_y, test_X, test_y,save_folder_path):
 
     train_X = train_X.reshape(-1)
     test_X = test_X.reshape(-1)
@@ -54,10 +54,10 @@ def train_distilbert_transformers2(train_X, train_y, test_X, test_y,save_folder_
     n_epochs = 1
     print('[#### info lol ###]number of epochs:', n_epochs)
 
-    transformer_layer = transformers.TFDistilBertModel.from_pretrained('distilbert-base-uncased')
-    tokenizer = transformers.DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
+    transformer_layer = transformers.TFMobileBertModel.from_pretrained('google/mobilebert-uncased')
+    tokenizer = transformers.MobileBertTokenizer.from_pretrained('google/mobilebert-uncased')
 
-    max_length = 160
+    max_length = 512
 
     model = build_model(transformer_layer, max_len=max_length)
     model.summary()
@@ -67,7 +67,7 @@ def train_distilbert_transformers2(train_X, train_y, test_X, test_y,save_folder_
 
 
     callbacks = get_callbacks(
-        best_model_checkpoint_path=os.path.join(save_folder_path,'distilbert_transformers2_model.h5'),
+        best_model_checkpoint_path=os.path.join(save_folder_path,'mobilebert_transformers_model.h5'),
         csv_logger_path=os.path.join(save_folder_path, 'history_log.csv'),
         tensorboard_logdir=os.path.join(save_folder_path, 'tensorboard'),
     )
