@@ -118,7 +118,7 @@ def process_dataset(tokenizer, X, y,BATCH_SIZE, max_padding_length:None):
     return batched_dataset, max_padding_length
 
 
-def train_bert_for_tf2(train_X, train_y, test_X, test_y,save_folder_path):
+def train_bert_for_tf2(train_X, train_y, test_X, test_y,save_folder_path,num_epochs):
 
     TAG_RE = re.compile(r'<[^>]+>')
 
@@ -155,7 +155,7 @@ def train_bert_for_tf2(train_X, train_y, test_X, test_y,save_folder_path):
 
     DROPOUT_RATE = 0.2
 
-    NB_EPOCHS = 1 #todo change
+    NB_EPOCHS = num_epochs #todo change
     print('[#### info lol ###]number of epochs:',NB_EPOCHS )
 
     text_model = TEXT_MODEL(vocabulary_size=VOCAB_LENGTH,

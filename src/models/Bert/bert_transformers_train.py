@@ -52,7 +52,7 @@ def convert_example_to_feature(tokenizer, sentence, max_length):
                                  truncation= True
                                  )
 
-def train_bert_transformers(train_X, train_y, test_X, test_y,save_folder_path):
+def train_bert_transformers(train_X, train_y, test_X, test_y,save_folder_path,num_epochs):
     train_X = train_X.reshape(-1)
     test_X = test_X.reshape(-1)
     train_y = np.array(train_y)
@@ -81,7 +81,7 @@ def train_bert_transformers(train_X, train_y, test_X, test_y,save_folder_path):
 
 
     # we will do just 1 epoch for illustration, though multiple epochs might be better as long as we will not overfit the model
-    number_of_epochs = 1
+    number_of_epochs = num_epochs
     print('[#### info lol ###]number of epochs:', number_of_epochs)
     # model initialization
     model = TFBertForSequenceClassification.from_pretrained('bert-base-uncased')

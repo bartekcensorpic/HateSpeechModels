@@ -44,14 +44,14 @@ def bert_encode(texts, tokenizer, max_len=512):
 
 
 
-def train_distilbert_transformers2(train_X, train_y, test_X, test_y,save_folder_path):
+def train_distilbert_transformers2(train_X, train_y, test_X, test_y,save_folder_path,num_epochs):
 
     train_X = train_X.reshape(-1)
     test_X = test_X.reshape(-1)
     train_y = np.array(train_y)
     test_y = np.array(test_y)
 
-    n_epochs = 1
+    n_epochs = num_epochs
     print('[#### info lol ###]number of epochs:', n_epochs)
 
     transformer_layer = transformers.TFDistilBertModel.from_pretrained('distilbert-base-uncased')

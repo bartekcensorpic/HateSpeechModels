@@ -110,7 +110,7 @@ def build_model(learning_rate,max_len=512, ):
     return model
 
 
-def train_distilbert_transformers(train_X, train_y, test_X, test_y,save_folder_path):
+def train_distilbert_transformers(train_X, train_y, test_X, test_y,save_folder_path,num_epochs):
     train_X = train_X.reshape(-1)
     test_X = test_X.reshape(-1)
     train_y = np.array(train_y)
@@ -132,7 +132,7 @@ def train_distilbert_transformers(train_X, train_y, test_X, test_y,save_folder_p
 
 
 
-    number_of_epochs = 1 #todo change
+    number_of_epochs = num_epochs
     print('[#### info lol ###]number of epochs:', number_of_epochs)
 
 

@@ -19,7 +19,7 @@ def get_max_length(train_X):
 
 
 
-def train_glove(train_X, train_y, test_X, test_y,save_folder_path, pretrained_model_path):
+def train_glove(train_X, train_y, test_X, test_y,save_folder_path, pretrained_model_path,num_epochs):
     train_X = train_X.reshape(-1)
     test_X = test_X.reshape(-1)
     train_y = array(train_y)
@@ -28,6 +28,8 @@ def train_glove(train_X, train_y, test_X, test_y,save_folder_path, pretrained_mo
     t = Tokenizer()
     t.fit_on_texts(train_X)
     vocab_size = len(t.word_index) + 1
+
+    print(f'pretrained GLOVE path is: {pretrained_model_path}')
 
     # integer encode the documents
     encoded_docs = t.texts_to_sequences(train_X)
@@ -81,7 +83,7 @@ def train_glove(train_X, train_y, test_X, test_y,save_folder_path, pretrained_mo
 
     history = model.fit(padded_docs,
                         train_y,
-                        epochs=50,
+                        epochs=num_epochs,
                         verbose=1,
                         callbacks = callbacks,
                         validation_data=(test_padded, test_y))
