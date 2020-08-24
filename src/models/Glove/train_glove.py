@@ -86,6 +86,7 @@ def train_glove(train_X, train_y, test_X, test_y,save_folder_path, pretrained_mo
                         epochs=num_epochs,
                         verbose=1,
                         callbacks = callbacks,
+                        batch_size=128,
                         validation_data=(test_padded, test_y))
 
     #todo to be used later

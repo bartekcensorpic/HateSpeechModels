@@ -1,5 +1,7 @@
-from sklearn.metrics import classification_report
+import os
 
+from sklearn.metrics import classification_report
+import numpy as np
 from src.pipeline.get_data import get_dfs
 from src.pipeline.get_models import (get_bert_tf2,
                                      get_glove,
@@ -38,10 +40,17 @@ def start(
     binary_evaluation_result = calculate_binary_classification_metrics(test_y, predictions, 'hate_speech', PREDICTION_THRESHOLD)
     binary_evaluation_result.save_to_disk(output_save_path)
 
-    #todo when convertet to 0-1
-    #    report = classification_report(
-    #    true_classes, predicted_classes, target_names=class_labels
-    #)
+    #arbitrary 0.5 threshold
+    predicted_classes = np.round(predictions).reshape(-1)
+    report = classification_report(
+                   test_y, predicted_classes# , target_names=['normal', 'hate_speech']
+                )
+
+    report_path = os.path.join(output_save_path, 'metrics_report.txt')
+    with open(report_path, "w") as f:
+        f.write(str(report))
+
+
 
 
 

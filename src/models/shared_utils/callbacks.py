@@ -36,10 +36,10 @@ def get_callbacks(
                         step_size=2000., mode='exp_range',
                         gamma=0.99994)
 
-    return (
+    return [
         learning_rate_reduction,
         checkpoint_callback,
         #csv_logger_callback,
         tensorboard_callback,
         #clr,
-    )
+    ]

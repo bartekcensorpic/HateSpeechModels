@@ -71,5 +71,7 @@ def init(args):
         glove_txt_path= glove_txt_path
     )
 
+    print('[INFO] everything done!')
+
 if __name__ == '__main__':
     main()
