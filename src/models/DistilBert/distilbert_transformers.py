@@ -1,6 +1,7 @@
 import tensorflow as tf
 from transformers import (DistilBertTokenizer,
-                          TFDistilBertModel)
+                          TFDistilBertModel,
+                          )
 
 from src.models.shared_utils.callbacks import get_callbacks
 from tensorflow.keras.layers import Dense, Input, Dropout, Conv1D, GlobalMaxPool1D
@@ -17,8 +18,8 @@ import os
 def encode_examples(X, y, tokenizer, max_length):
     # prepare list, so that we can build up final TensorFlow dataset from slices.
     input_ids_list = []
-    token_type_ids_list = []
-    attention_mask_list = []
+    # token_type_ids_list = []
+    # attention_mask_list = []
     label_list = []
 
     ds = np.zeros((X.shape[0], 2, 1), dtype = 'object')
@@ -34,19 +35,18 @@ def encode_examples(X, y, tokenizer, max_length):
         bert_input = convert_example_to_feature(tokenizer,s,max_length)
 
         input_ids_list.append(bert_input['input_ids'])
-        token_type_ids_list.append(bert_input['token_type_ids'])
-        attention_mask_list.append(bert_input['attention_mask'])
+        # token_type_ids_list.append(bert_input['token_type_ids'])
+        # attention_mask_list.append(bert_input['attention_mask'])
         label_list.append([label])
 
     return tf.data.Dataset.from_tensor_slices(
-        (input_ids_list, attention_mask_list, token_type_ids_list, label_list)).map(map_example_to_dict)
+        (input_ids_list, label_list)).map(map_example_to_dict)
 
-def map_example_to_dict(input_ids, attention_masks, token_type_ids, label):
-  return {
-      "input_ids": input_ids,
-      "token_type_ids": token_type_ids,
-      "attention_mask": attention_masks,
+def map_example_to_dict(input_ids, label):
+  res =  {
+      "input_word_ids": input_ids
   }, label
+  return res
 
 def convert_example_to_feature(tokenizer, sentence, max_length):
     # combine step for tokenization, WordPiece vector mapping and will add also special tokens and truncate reviews longer than our max length
@@ -135,20 +135,22 @@ def train_distilbert_transformers(train_X, train_y, test_X, test_y,save_folder_p
     number_of_epochs = num_epochs
     print('[#### info lol ###]number of epochs:', number_of_epochs)
 
-
-
-    callbacks = get_callbacks(
+    [learning_rate_reduction,
+    checkpoint_callback,
+    tensorboard_callback   ] = get_callbacks(
         best_model_checkpoint_path=os.path.join(save_folder_path,'distilbert_transformers_model.h5'),
         csv_logger_path=os.path.join(save_folder_path, 'history_log.csv'),
         tensorboard_logdir=os.path.join(save_folder_path, 'tensorboard'),
     )
 
-
-
+    #todo https://github.com/huggingface/transformers/issues/2645
+    print('[INFO] something here is fucked with hugging face config and saving with checkpoints')
     bert_history = model.fit(ds_train_encoded,
                              epochs=number_of_epochs,
-                             callbacks=callbacks,
+                            # callbacks=[learning_rate_reduction,tensorboard_callback],
                              validation_data=ds_test_encoded)
+    model_save_path = os.path.join(save_folder_path,'distilbert_transformers_model.h5')
+    model.save(model_save_path)
 
     #todo evaluate and return results
     predictions = model.predict_proba(ds_test_encoded)#get probabilities of class 1

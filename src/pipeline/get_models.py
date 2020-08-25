@@ -92,10 +92,12 @@ def get_bert_transformers(train_X, train_y, test_X, test_y,root_save_path,num_ep
 
 def get_glove(train_X, train_y, test_X, test_y,root_save_path,num_epochs,glove_txt_path):
     output_save_path = get_output_folder(root_save_path, 'glove')
-    if glove_txt_path is None:
-        raise ValueError('Glove model requires path to file glove.6B.100d.txt ')
+
 
     def train():
+        if glove_txt_path is None:
+            raise ValueError('Glove model requires path to file glove.6B.100d.txt ')
+
         return train_glove(
             train_X=train_X,
             train_y=train_y,

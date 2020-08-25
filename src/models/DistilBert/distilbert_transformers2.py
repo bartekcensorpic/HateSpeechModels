@@ -65,9 +65,10 @@ def train_distilbert_transformers2(train_X, train_y, test_X, test_y,save_folder_
     train_input = bert_encode(train_X, tokenizer, max_len=max_length)
     test_input = bert_encode(test_X, tokenizer, max_len=max_length)
 
-
-    callbacks = get_callbacks(
-        best_model_checkpoint_path=os.path.join(save_folder_path,'distilbert_transformers2_model.h5'),
+    [learning_rate_reduction,
+     checkpoint_callback,
+     tensorboard_callback] = get_callbacks(
+        best_model_checkpoint_path=os.path.join(save_folder_path,'distilbert_transformers2_model.pb'),
         csv_logger_path=os.path.join(save_folder_path, 'history_log.csv'),
         tensorboard_logdir=os.path.join(save_folder_path, 'tensorboard'),
     )
@@ -76,10 +77,12 @@ def train_distilbert_transformers2(train_X, train_y, test_X, test_y,save_folder_
         train_input, train_y,
         validation_split=0.1,
         epochs=n_epochs,
-        batch_size=32,
-        callbacks=callbacks
+        batch_size=64,
+        callbacks=[learning_rate_reduction,tensorboard_callback,checkpoint_callback]
     )
 
+    #change saved models to .pb instead of h5
+    #model.save_pretrained(save_folder_path)
     predictions = model.predict(test_input, verbose=1)
 
     return predictions, test_y

@@ -28,13 +28,16 @@ def start(
         'glove': get_glove(train_X, train_y, test_X, test_y,root_save_path,num_epochs,glove_txt_path),
         'bert_transformers': get_bert_transformers(train_X, train_y, test_X, test_y,root_save_path,num_epochs),
         'bert_tf2': get_bert_tf2(train_X, train_y, test_X, test_y,root_save_path,num_epochs),
-        'distilbert_transformers_comples': get_distilbert_transformers_complex(train_X, train_y, test_X, test_y,root_save_path,num_epochs),
+        'distilbert_transformers_complex': get_distilbert_transformers_complex(train_X, train_y, test_X, test_y,root_save_path,num_epochs),
         'distilbert_transformers2_simple': get_distilbert_transformers2_simple(train_X, train_y, test_X, test_y,root_save_path,num_epochs),
         'mobilebert_transformers': get_mobilebert_transformers(train_X, train_y, test_X, test_y,root_save_path,num_epochs),
     }
 
     train_function, output_save_path  = model_map[model_name]
 
+    if not os.path.exists(output_save_path):
+        os.makedirs(output_save_path)
+    #todo paramters should be passed here, not in dictionary. do not invoke this functions in dictionary
     predictions, test_y = train_function()
 
     binary_evaluation_result = calculate_binary_classification_metrics(test_y, predictions, 'hate_speech', PREDICTION_THRESHOLD)
