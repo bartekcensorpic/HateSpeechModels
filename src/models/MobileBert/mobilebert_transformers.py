@@ -92,7 +92,7 @@ def train_mobilebert_transformers(
         train_y,
         validation_split=0.1,
         epochs=n_epochs,
-        batch_size=32,
+        batch_size=8,
         callbacks=[learning_rate_reduction, checkpoint_callback, tensorboard_callback],
     )
 

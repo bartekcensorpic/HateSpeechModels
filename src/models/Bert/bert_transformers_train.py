@@ -130,6 +130,6 @@ def train_bert_transformers(
     )
 
 
-    predictions = model.predict_proba(ds_test_encoded)  # get probabilities of class 1
+    predictions = model.predict(ds_test_encoded)  # get probabilities of class 1
 
     return predictions, test_y
