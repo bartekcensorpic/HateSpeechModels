@@ -4,7 +4,11 @@ from src.models.shared_utils.clr_callback import CyclicLR
 
 
 def get_callbacks(
-    best_model_checkpoint_path: str, csv_logger_path: str, tensorboard_logdir: str, metric_to_monitor='val_f1_m', checkpoint_mode = 'max'
+    best_model_checkpoint_path: str,
+    csv_logger_path: str,
+    tensorboard_logdir: str,
+    metric_to_monitor="val_f1_m",
+    checkpoint_mode="max",
 ):
     """
     Prepares callbacks for model training
@@ -32,14 +36,14 @@ def get_callbacks(
 
     tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=tensorboard_logdir)
 
-    clr = CyclicLR(base_lr=0.0001, max_lr=0.0001,
-                        step_size=2000., mode='exp_range',
-                        gamma=0.99994)
+    clr = CyclicLR(
+        base_lr=0.0001, max_lr=0.0001, step_size=2000.0, mode="exp_range", gamma=0.99994
+    )
 
     return [
         learning_rate_reduction,
         checkpoint_callback,
-        #csv_logger_callback,
+        # csv_logger_callback,
         tensorboard_callback,
-        #clr,
+        # clr,
     ]

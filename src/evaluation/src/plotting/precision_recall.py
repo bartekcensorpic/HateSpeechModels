@@ -5,7 +5,9 @@ import matplotlib.pyplot as plt
 from adjustText import adjust_text
 
 
-def plot_threshold_f1_plot(f1_scores: Union[np.ndarray,List], thresholds: Union[np.ndarray,List], title: str) -> plt.axes:
+def plot_threshold_f1_plot(
+    f1_scores: Union[np.ndarray, List], thresholds: Union[np.ndarray, List], title: str
+) -> plt.axes:
     """
     Draws plot for f1_score and thresholds
 
@@ -15,7 +17,7 @@ def plot_threshold_f1_plot(f1_scores: Union[np.ndarray,List], thresholds: Union[
     :return: matplotlib axis
     """
     fig, ax = plt.subplots()
-    ax.plot(thresholds,f1_scores)
+    ax.plot(thresholds, f1_scores)
 
     ax.set_title(title)
     ax.set_ylabel("F1 score")
@@ -25,7 +27,11 @@ def plot_threshold_f1_plot(f1_scores: Union[np.ndarray,List], thresholds: Union[
 
 
 def plot_precision_recall_threshold_plot(
-    precision: np.ndarray, recall: np.ndarray, thresholds: np.ndarray, title: str, n_thresholds: int = 10
+    precision: np.ndarray,
+    recall: np.ndarray,
+    thresholds: np.ndarray,
+    title: str,
+    n_thresholds: int = 10,
 ) -> plt.axes:
     """
     Draws precision-recall plot with n_thresholds evenly spaced thresholds points

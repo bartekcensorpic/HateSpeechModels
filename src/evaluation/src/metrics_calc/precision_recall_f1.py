@@ -59,7 +59,11 @@ def calculate_f1_vs_thresholds(
 
 
 def calculate_f1_vs_thresholds_and_get_its_plots(
-    class_name: str, Y: np.ndarray, X: np.ndarray, thresholds: np.ndarray, n_thresholds: int = 15
+    class_name: str,
+    Y: np.ndarray,
+    X: np.ndarray,
+    thresholds: np.ndarray,
+    n_thresholds: int = 15,
 ) -> Tuple[List, List, plt.axes]:
     """
      Calculates F1 score for given threshold values and returns plot of it

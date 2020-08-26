@@ -1,16 +1,22 @@
 import numpy as np
-from src.evaluation.src.evaluations.binary_classification_result import BinaryClassificationResult
+from src.evaluation.src.evaluations.binary_classification_result import (
+    BinaryClassificationResult,
+)
 from sklearn.metrics import precision_recall_curve
 
 from src.evaluation.src.plotting.calibration_curve import plot_calibration_curve
-from src.evaluation.src.plotting.precision_recall import plot_precision_recall_threshold_plot
+from src.evaluation.src.plotting.precision_recall import (
+    plot_precision_recall_threshold_plot,
+)
 from src.evaluation.src.plotting.confusion_matrix import plot_confusion_matrix
 from src.evaluation.src.metrics_calc.precision_recall_f1 import (
     calculate_f1_vs_thresholds_and_get_its_plots,
 )
 
 
-def __get_confusion_matrix(class_name, org_y, org_x, f1_scores, thresholds, initial_threshold=None):
+def __get_confusion_matrix(
+    class_name, org_y, org_x, f1_scores, thresholds, initial_threshold=None
+):
     """
     Calculates confusion matrix and selects best threshold if not provided
 
@@ -37,7 +43,7 @@ def __get_confusion_matrix(class_name, org_y, org_x, f1_scores, thresholds, init
 
 
 def calculate_binary_classification_metrics(
-        y: np.ndarray, x: np.ndarray, class_name: str, prediction_threshold: float = None
+    y: np.ndarray, x: np.ndarray, class_name: str, prediction_threshold: float = None
 ) -> BinaryClassificationResult:
     """
     Calculates precision, recall, thresholds, F1 scores and plots:
@@ -71,7 +77,9 @@ def calculate_binary_classification_metrics(
         class_name, y, x, thresholds
     )
 
-    cf_axis = __get_confusion_matrix(class_name, y, x, f1s, ths, initial_threshold=prediction_threshold)
+    cf_axis = __get_confusion_matrix(
+        class_name, y, x, f1s, ths, initial_threshold=prediction_threshold
+    )
 
     return BinaryClassificationResult(
         precision, recall, thresholds, f1s, ths, p_r_t_axis, cc_axis, cf_axis, f1_ths_ax

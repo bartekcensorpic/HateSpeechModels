@@ -12,14 +12,22 @@ from src.models.shared_utils.callbacks import get_callbacks
 from src.utils.keras_metrics import f1_m, precision_m, recall_m
 import os
 
+
 def get_max_length(train_X):
     longest_sent = max(train_X, key=len)
     length = len(longest_sent)
     return length
 
 
-
-def train_glove(train_X, train_y, test_X, test_y,save_folder_path, pretrained_model_path,num_epochs):
+def train_glove(
+    train_X,
+    train_y,
+    test_X,
+    test_y,
+    save_folder_path,
+    pretrained_model_path,
+    num_epochs,
+):
     train_X = train_X.reshape(-1)
     test_X = test_X.reshape(-1)
     train_y = array(train_y)
@@ -29,29 +37,28 @@ def train_glove(train_X, train_y, test_X, test_y,save_folder_path, pretrained_mo
     t.fit_on_texts(train_X)
     vocab_size = len(t.word_index) + 1
 
-    print(f'pretrained GLOVE path is: {pretrained_model_path}')
+    print(f"pretrained GLOVE path is: {pretrained_model_path}")
 
     # integer encode the documents
     encoded_docs = t.texts_to_sequences(train_X)
 
     max_length = get_max_length(train_X)
-    padded_docs = pad_sequences(encoded_docs, maxlen=max_length, padding='post')
+    padded_docs = pad_sequences(encoded_docs, maxlen=max_length, padding="post")
 
-    #prepare test set
+    # prepare test set
     test_sequences = t.texts_to_sequences(test_X)
-    test_padded = pad_sequences(test_sequences, maxlen=max_length, padding='post')
-
+    test_padded = pad_sequences(test_sequences, maxlen=max_length, padding="post")
 
     # load the whole embedding into memory
     embeddings_index = dict()
-    f = open(pretrained_model_path, mode='rt', encoding='utf-8')
+    f = open(pretrained_model_path, mode="rt", encoding="utf-8")
     for line in f:
         values = line.split()
         word = values[0]
-        coefs = asarray(values[1:], dtype='float32')
+        coefs = asarray(values[1:], dtype="float32")
         embeddings_index[word] = coefs
     f.close()
-    print('Loaded %s word vectors.' % len(embeddings_index))
+    print("Loaded %s word vectors." % len(embeddings_index))
 
     # create a weight matrix for words in training docs
     embedding_matrix = zeros((vocab_size, 100))
@@ -62,38 +69,52 @@ def train_glove(train_X, train_y, test_X, test_y,save_folder_path, pretrained_mo
 
     # define model
     model = Sequential()
-    e = Embedding(vocab_size, 100, weights=[embedding_matrix], input_length=max_length, trainable=False) # todo: try trainable=True
+    e = Embedding(
+        vocab_size,
+        100,
+        weights=[embedding_matrix],
+        input_length=max_length,
+        trainable=False,
+    )  # todo: try trainable=True
     model.add(e)
-    model.add(Conv1D(32, 8, activation='relu'))
+    model.add(Conv1D(32, 8, activation="relu"))
     model.add(MaxPooling1D())
     model.add(Flatten())
-    model.add(Dense(10, activation='relu'))
-    model.add(Dense(1, activation='sigmoid'))
+    model.add(Dense(10, activation="relu"))
+    model.add(Dense(1, activation="sigmoid"))
     # compile the model
-    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy',f1_m,precision_m, recall_m])
+    model.compile(
+        optimizer="adam",
+        loss="binary_crossentropy",
+        metrics=["accuracy", f1_m, precision_m, recall_m],
+    )
     # summarize the model
     model.summary()
     # fit the model
 
-    callbacks = get_callbacks(
-        best_model_checkpoint_path=os.path.join(save_folder_path,'glove_model.h5'),
-        csv_logger_path=os.path.join(save_folder_path, 'history_log.csv'),
-        tensorboard_logdir=os.path.join(save_folder_path, 'tensorboard'),
+    [
+        learning_rate_reduction,
+        checkpoint_callback,
+        tensorboard_callback,
+    ] = get_callbacks(
+        best_model_checkpoint_path=os.path.join(save_folder_path, "glove_model.h5"),
+        csv_logger_path=os.path.join(save_folder_path, "history_log.csv"),
+        tensorboard_logdir=os.path.join(save_folder_path, "tensorboard"),
     )
 
-    history = model.fit(padded_docs,
-                        train_y,
-                        epochs=num_epochs,
-                        verbose=1,
-                        callbacks = callbacks,
-                        batch_size=512,
-                        validation_data=(test_padded, test_y))
+    history = model.fit(
+        padded_docs,
+        train_y,
+        epochs=num_epochs,
+        verbose=1,
+        callbacks=[learning_rate_reduction, checkpoint_callback, tensorboard_callback],
+        batch_size=512,
+        validation_data=(test_padded, test_y),
+    )
 
-    #todo to be used later
+    # todo to be used later
     losses_and_shit = model.evaluate(test_padded, test_y)
 
-    predictions = model.predict_proba(test_padded)#get probabilities of class 1
-
+    predictions = model.predict_proba(test_padded)  # get probabilities of class 1
 
     return predictions, test_y
-
