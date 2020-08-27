@@ -7,6 +7,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.layers import Flatten
 from tensorflow.keras.layers import Embedding, Conv1D, MaxPooling1D
+import pickle
 
 from src.models.shared_utils.callbacks import get_callbacks
 from src.utils.keras_metrics import f1_m, precision_m, recall_m
@@ -38,6 +39,10 @@ def train_glove(
     vocab_size = len(t.word_index) + 1
 
     print(f"pretrained GLOVE path is: {pretrained_model_path}")
+
+    tokenizer_save_path = os.path.join(save_folder_path, 'tokenizer.pickle')
+    with open(tokenizer_save_path, 'wb') as handle:
+        pickle.dump(t, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
     # integer encode the documents
     encoded_docs = t.texts_to_sequences(train_X)
@@ -90,6 +95,9 @@ def train_glove(
     )
     # summarize the model
     model.summary()
+
+
+
     # fit the model
 
     [
