@@ -50,8 +50,9 @@ def distilbert_transformers2_simple_conversion():
 
 
 
+    #path to a folder with .pb file, assets and variable folders
     PATH_TO_PB = r"C:\Users\barte\Documents\C5_connection\2020-08-26-09-20-50_distilbert_transformers2_simple\distilbert_transformers2_model"
-    TH_LITE_SAVE_PATH = r"C:\Users\barte\Documents\C5_connection\2020-08-26-09-20-50_distilbert_transformers2_simple\tf_lite_model.tflite"
+    TH_LITE_SAVE_PATH = r"C:\Users\barte\Documents\C5_connection\2020-08-26-09-20-50_distilbert_transformers2_simple\distilbert_model.tflite"
     base_model = tf.keras.models.load_model(
         PATH_TO_PB,
         custom_objects={"f1_m":f1_m, "precision_m":precision_m, "recall_m":recall_m},
