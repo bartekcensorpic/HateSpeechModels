@@ -51,27 +51,32 @@ def distilbert_transformers2_simple_conversion():
 
 
     #path to a folder with .pb file, assets and variable folders
-    PATH_TO_PB = r"C:\Users\barte\Documents\C5_connection\2020-08-26-09-20-50_distilbert_transformers2_simple\distilbert_transformers2_model"
-    TH_LITE_SAVE_PATH = r"C:\Users\barte\Documents\C5_connection\2020-08-26-09-20-50_distilbert_transformers2_simple\distilbert_model.tflite"
+    PATH_TO_PB = r"C:\Users\barte\Documents\C5_connection\models\2020-08-26-09-20-50_distilbert_transformers2_simple\distilbert_transformers2_model"
+    TH_LITE_SAVE_PATH = r"C:\Users\barte\Documents\C5_connection\models\2020-08-26-09-20-50_distilbert_transformers2_simple\distilbert_model.tflite"
     base_model = tf.keras.models.load_model(
         PATH_TO_PB,
         custom_objects={"f1_m":f1_m, "precision_m":precision_m, "recall_m":recall_m},
 
     )
+    input_spec = tf.TensorSpec([1, 160], tf.int32)
+    base_model._set_inputs(input_spec, training=False)
 
-
-    converter = tf.lite.TFLiteConverter.from_keras_model(base_model)
+    #using keras
     #converter = tf.lite.TFLiteConverter.from_keras_model(base_model)
+
+    # using pb
+    converter = tf.lite.TFLiteConverter.from_saved_model(PATH_TO_PB)
     #https://github.com/huggingface/tflite-android-transformers/blob/master/models_generation/distilbert.py
     converter.target_spec.supported_ops = [tf.lite.OpsSet.TFLITE_BUILTINS,
                                            tf.lite.OpsSet.SELECT_TF_OPS]
-
+    converter.allow_custom_ops = True
     tflite_model = converter.convert()
     with open(TH_LITE_SAVE_PATH, "wb") as saver:
         saver.write(tflite_model)
 
 
     tflite_model = tf.lite.Interpreter(model_path=TH_LITE_SAVE_PATH)
+
 
     input_details = tflite_model.get_input_details()
     output_details = tflite_model.get_output_details()

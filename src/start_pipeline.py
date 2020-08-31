@@ -5,7 +5,8 @@ import numpy as np
 from src.pipeline.get_data import get_dfs
 from src.pipeline.get_models import (
     get_bert_tf2,
-    get_glove,
+    get_glove_simple,
+    get_glove_complex,
     get_bert_transformers,
     get_distilbert_transformers2_simple,
     get_distilbert_transformers_complex,
@@ -30,7 +31,8 @@ def start(
     )
 
     model_map = {
-        "glove": get_glove(root_save_path, glove_txt_path),
+        "glove_simple": get_glove_simple(root_save_path, glove_txt_path),
+        "glove_complex": get_glove_complex(root_save_path, glove_txt_path),
         "bert_transformers": get_bert_transformers(root_save_path),
         "bert_tf2": get_bert_tf2(root_save_path),
         "distilbert_transformers_complex": get_distilbert_transformers_complex(
