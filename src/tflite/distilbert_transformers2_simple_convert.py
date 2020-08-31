@@ -53,6 +53,9 @@ def distilbert_transformers2_simple_conversion():
     #path to a folder with .pb file, assets and variable folders
     PATH_TO_PB = r"C:\Users\barte\Documents\C5_connection\models\2020-08-26-09-20-50_distilbert_transformers2_simple\distilbert_transformers2_model"
     TH_LITE_SAVE_PATH = r"C:\Users\barte\Documents\C5_connection\models\2020-08-26-09-20-50_distilbert_transformers2_simple\distilbert_model.tflite"
+
+    # PATH_TO_PB = r"/mnt/efs/hatespeech_results/2020-08-26-09-20-50_distilbert_transformers2_simple/distilbert_transformers2_model"
+    # TH_LITE_SAVE_PATH = r"/mnt/efs/hatespeech_results/2020-08-26-09-20-50_distilbert_transformers2_simple/distilbert_model.tflite"
     base_model = tf.keras.models.load_model(
         PATH_TO_PB,
         custom_objects={"f1_m":f1_m, "precision_m":precision_m, "recall_m":recall_m},
@@ -70,6 +73,7 @@ def distilbert_transformers2_simple_conversion():
     converter.target_spec.supported_ops = [tf.lite.OpsSet.TFLITE_BUILTINS,
                                            tf.lite.OpsSet.SELECT_TF_OPS]
     converter.allow_custom_ops = True
+
     tflite_model = converter.convert()
     with open(TH_LITE_SAVE_PATH, "wb") as saver:
         saver.write(tflite_model)
@@ -85,16 +89,16 @@ def distilbert_transformers2_simple_conversion():
     BATCH_SIZE = 2
 
 
-    tflite_model.resize_tensor_input(
-        input_details[0]["index"], (BATCH_SIZE, MAX_LENGTH)
-    )
-
-    tflite_model.resize_tensor_input(
-        output_details[0]["index"], (1, 1)
-    )
-
-    #[WARNING] next line throws this error and i haven't managed to solve it yet:
-    #RuntimeError: Regular TensorFlow ops are not supported by this interpreter. Make sure you apply/link the Flex delegate before inference.Node number 0 (FlexIdentity) failed to prepare.
+    # tflite_model.resize_tensor_input(
+    #     input_details[0]["index"], (BATCH_SIZE, MAX_LENGTH)
+    # )
+    #
+    # tflite_model.resize_tensor_input(
+    #     output_details[0]["index"], (1, 1)
+    # )
+    #
+    # #[WARNING] next line throws this error and i haven't managed to solve it yet:
+    # #RuntimeError: Regular TensorFlow ops are not supported by this interpreter. Make sure you apply/link the Flex delegate before inference.Node number 0 (FlexIdentity) failed to prepare.
     tflite_model.allocate_tensors()
 
 
@@ -105,12 +109,13 @@ def distilbert_transformers2_simple_conversion():
         "distilbert-base-uncased"
     )
 
-    test_sentences = ['Fucking piece of shit cops, protect and serve my ass', 'you are really nice person']
+    test_sentences = ['Fucking piece of shit cops, protect and serve my ass']#, 'you are really nice person']
     test_sentences = np.asarray(test_sentences).reshape(-1)
     padded_docs = bert_encode(test_sentences, tokenizer, max_len=MAX_LENGTH)
-
+    padded_docs = padded_docs.astype('int32')
 
     tflite_model.set_tensor(input_details[0]["index"], padded_docs)
+    print('[INFO LOL] INVOKE')
     tflite_model.invoke()
 
     tflite_q_model_predictions = tflite_model.get_tensor(

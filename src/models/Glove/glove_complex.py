@@ -138,8 +138,7 @@ def train_glove_complex(
                         max_length= max_length,
                         cnn_filters=CNN_FILTERS,
                         dnn_units=DNN_UNITS,
-                        dropout_rate=DROPOUT_RATE
-                        )
+                        dropout_rate=DROPOUT_RATE)
 
 
     [

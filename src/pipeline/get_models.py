@@ -1,4 +1,4 @@
-from src.models.Glove.train_glove import train_glove
+from src.models.Glove.glove_simple import train_glove
 from src.models.Glove.glove_complex import train_glove_complex
 from src.models.Bert.bert_transformers_train import train_bert_transformers
 from src.models.Bert.bert_for_tf2_train import train_bert_for_tf2
