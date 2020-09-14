@@ -9,26 +9,30 @@ def main():
         "--dataset_path",
         type=str,
         required=True,
+        help="Path to .csv file that has columns: 'Comment_text' and 'Hateful_or_not' "
     )
 
     parser.add_argument(
         "--root_save_path",
         type=str,
-        required=True
+        required=True,
+        help='Folder where all the results will be saved. Inside this folder will be created folder for each run.'
     )
 
 
     parser.add_argument(
         "--model_name",
         type=str,
-        required=True
+        required=True,
+        help="Key in 'model_map' variable in 'start_pipeline.py' file."
     )
 
     parser.add_argument(
         "--glove_txt_path",
         type=str,
         required=False,
-        default=None
+        default=None,
+        help="If you are trainig GLOVE model, you need to download pretrained embeddings from https://nlp.stanford.edu/projects/glove/"
 
     )
 
@@ -38,12 +42,14 @@ def main():
         type=int,
         required=False,
         default=None,
+        help="Preprocessing all data in .csv file might take some time. If you want to just check something quickly and don't want to wait, just set some low number like 600. Only this number of rows will be used."
     )
 
     parser.add_argument(
         "--num_epochs",
         type=int,
         default=10,
+        help='number of epochs'
     )
 
 
